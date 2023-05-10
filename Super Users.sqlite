@@ -1,0 +1,47 @@
+
+
+/*
+
+5. Super users
+A company defines its super users as those who have made at least two transactions. From the following table, write a query to return, for each user, the date when they become a super user, ordered by oldest super users first. Users who are not super users should also be present in the table.
+
+*/
+
+WITH users (user_id, product_id, transaction_date)
+AS (VALUES
+(1, 101, 12),
+(2, 105, 13),
+(1, 111, 14),
+(3, 121, 15),
+(1, 101, 16),
+(2, 105, 17),
+(4, 101, 16),
+(3, 105, 15)),
+
+date_records AS (
+  SELECT
+    user_id,
+    transaction_date,
+    ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY transaction_date) AS transaction_rank,
+	COUNT() OVER (PARTITION BY user_id) AS number_of_transactions
+	
+  FROM
+    users
+)
+
+SELECT 
+  user_id,
+  (CASE WHEN 
+     number_of_transactions = 1 
+   THEN 
+     NULL 
+   ELSE 
+     transaction_date 
+   END) AS transaction_date
+FROM
+  date_records
+WHERE
+  transaction_rank = 2 OR number_of_transactions = 1
+ORDER BY 
+  transaction_date NULLS LAST
+

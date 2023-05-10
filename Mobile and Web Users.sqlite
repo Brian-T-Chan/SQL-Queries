@@ -1,0 +1,82 @@
+
+/*
+
+7. Mobile and web visitors
+With the following two tables, return the fraction of users who only visited mobile, only visited web, and visited both.
+
+*/
+
+
+WITH mobile (user_id, page_url)
+AS (VALUES
+(1, 'A'),
+(2, 'B'),
+(3, 'C'),
+(4, 'A'),
+(9, 'B'),
+(2, 'C'),
+(10, 'B')),
+
+web (user_id, page_url)
+AS (VALUES
+(6, 'A'),
+(2, 'B'),
+(3, 'C'),
+(7, 'A'),
+(4, 'B'),
+(8, 'C'),
+(5, 'B')),
+
+mobile_members AS (
+  SELECT
+    user_id
+  FROM
+    mobile
+  GROUP BY
+    user_id
+),
+
+web_members AS (
+  SELECT
+    user_id
+  FROM
+    web
+  GROUP BY
+    user_id
+),
+
+all_members AS (
+  SELECT * FROM mobile_members
+  UNION
+  SELECT * FROM web_members
+),
+
+mobile_web AS (
+  SELECT
+
+     AVG(CASE WHEN web_members.user_id IS NULL THEN 1 ELSE 0 END) AS mobile_fraction,
+     AVG(CASE WHEN mobile_members.user_id IS NULL THEN 1 ELSE 0 END) AS web_fraction
+
+  FROM
+    all_members 
+    LEFT JOIN 
+      mobile_members
+    ON 
+      all_members.user_id = mobile_members.user_id
+    LEFT JOIN
+      web_members
+    ON
+      all_members.user_id = web_members.user_id
+)
+
+SELECT 
+
+  mobile_fraction,
+  web_fraction,
+  1.0 - mobile_fraction - web_fraction AS both_fraction
+
+FROM mobile_web
+
+
+
+
