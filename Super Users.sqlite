@@ -18,16 +18,25 @@ AS (VALUES
 (4, 101, 16),
 (3, 105, 15)),
 
+
+-- Rank the transactions of each user by date and keep track of
+-- the number of transactions every user has made.
+
 date_records AS (
   SELECT
     user_id,
     transaction_date,
     ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY transaction_date) AS transaction_rank,
-	COUNT() OVER (PARTITION BY user_id) AS number_of_transactions
+	  COUNT() OVER (PARTITION BY user_id) AS number_of_transactions
 	
   FROM
     users
 )
+
+
+-- Get rows with transaction_rank = 2 and rows with number_of_transactions = 1
+-- to get the superusers and other users, along with the dates the superusers
+-- became superusers.
 
 SELECT 
   user_id,

@@ -26,6 +26,9 @@ students (student_id, school_id, grade_level, date_of_birth) AS (VALUES
 (3, 1, 3, '2014-04-05'),
 (4, 2, 4, '2013-04-03')),
 
+
+-- Extract month and day data from the attendance table.
+
 attendance2 AS (
   SELECT
     student_id,
@@ -36,6 +39,9 @@ attendance2 AS (
     attendance
 ),
 
+
+-- Extract month and day data from the students table.
+
 students2 AS (
   SELECT
     student_id,
@@ -44,6 +50,9 @@ students2 AS (
   FROM
     students
 )
+
+
+-- Perform a left join to determine attendance on birthdays and compute the results.
 
 SELECT 
 

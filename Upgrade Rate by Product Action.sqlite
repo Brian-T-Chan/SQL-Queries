@@ -2,7 +2,7 @@
 /*
 
 8. Upgrade rate by product action
-Given the following two tables, return the fraction of users, rounded to two decimal places, who accessed feature two (type: F2 in events table) and upgraded to premium within the first 30 days of signing up.
+Given the following two tables, return the fraction of users, rounded to two decimal places, who accessed feature two and upgraded to premium within the first 30 days of signing up.
 
 */
 
@@ -15,6 +15,9 @@ WITH users (user_id, name, join_date) AS (VALUES
 (6, 'Justin', '2020-02-17'),
 (7, 'Jeremy', '2020-02-18')),
 
+
+-- F1: feature one, F2: feature two, P: premium
+
 events (user_id, type, access_date) AS (VALUES
 (1, 'F1', '2020-03-01'),
 (2, 'F2', '2020-03-02'),
@@ -24,6 +27,9 @@ events (user_id, type, access_date) AS (VALUES
 (1, 'P', '2020-03-16'),
 (3, 'P', '2020-03-22')),
 
+
+-- Get info on users accessing feature two.
+
 f2_events AS (
   SELECT * FROM 
     events 
@@ -31,12 +37,20 @@ f2_events AS (
     type = 'F2'
 ),
 
+
+-- Get info on users upgrading to premium.
+
 p_events AS (
   SELECT * FROM
     events
   WHERE
     type = 'P'
 )
+
+
+-- Perform two left joins and use a CASE statement to determine the users that 
+-- accessed F2 and upgraded to P within 30 days of their join date. Then take an
+-- average to determine the answer.
 
 SELECT 
 

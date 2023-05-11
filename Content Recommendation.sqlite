@@ -17,6 +17,9 @@ AS (VALUES
 (4, 1),
 (4, 3)),
 
+
+-- The letters 'A', 'B', and 'C' represent pages.
+
 likes (user_id, page_likes)
 AS (VALUES
 (1, 'A'),
@@ -26,6 +29,9 @@ AS (VALUES
 (3, 'B'),
 (3, 'C'),
 (4, 'B')),
+
+
+-- For every user, determine what pages were liked by her/his friends.
 
 friend_likes AS (
   SELECT
@@ -40,17 +46,24 @@ friend_likes AS (
   GROUP BY 1,2
 ),
 
+
+-- For every user, compare the pages liked by that user with the pages liked by
+-- her/his friends.
+
 friends_and_you AS (
   SELECT 
     friend_likes.user_id AS user_id,
-	friend_likes.friend_page_likes AS friend_page_likes,
-	likes.page_likes AS page_likes
+	  friend_likes.friend_page_likes AS friend_page_likes,
+	  likes.page_likes AS page_likes
   FROM friend_likes LEFT JOIN likes
   ON
     friend_likes.user_id = likes.user_id
   AND
     friend_likes.friend_page_likes = likes.page_likes
 )
+
+
+-- Use the above comparison to determine the answers.
 
 SELECT 
   user_id,

@@ -27,6 +27,9 @@ AS (VALUES
 (8, 'C'),
 (5, 'B')),
 
+
+-- Select all mobile visitors. Remove duplicates.
+
 mobile_members AS (
   SELECT
     user_id
@@ -35,6 +38,9 @@ mobile_members AS (
   GROUP BY
     user_id
 ),
+
+
+-- Select all web visitors. Remove duplicates.
 
 web_members AS (
   SELECT
@@ -45,11 +51,18 @@ web_members AS (
     user_id
 ),
 
+
+-- Get all visitors. Remove duplicates.
+
 all_members AS (
   SELECT * FROM mobile_members
   UNION
   SELECT * FROM web_members
 ),
+
+
+-- Every visitor considered is a mobile or web visitor. So determine the visitors that 
+-- are not web members and the visitors that are not mobile members.
 
 mobile_web AS (
   SELECT
@@ -68,6 +81,9 @@ mobile_web AS (
     ON
       all_members.user_id = web_members.user_id
 )
+
+
+-- Calculate the answer.
 
 SELECT 
 
